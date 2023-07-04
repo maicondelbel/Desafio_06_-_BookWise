@@ -18,7 +18,6 @@ import {
   ReviewFormContent,
 } from './styles'
 
-import { useSelectedBook } from '@/hooks/useSelectedBook'
 import { api } from '@/lib/axios'
 import { queryClient } from '@/lib/reactQuery'
 import { useMutation } from '@tanstack/react-query'
@@ -26,6 +25,7 @@ import { useSession } from 'next-auth/react'
 
 interface IReviewForm {
   onSetIsOpenRatingForm: (state: boolean) => void
+  selectedBookId: string
 }
 
 const schema = z.object({
@@ -43,8 +43,10 @@ const schema = z.object({
 
 type IFormData = z.infer<typeof schema>
 
-export function ReviewForm({ onSetIsOpenRatingForm }: IReviewForm) {
-  const { selectedBookId } = useSelectedBook()
+export function ReviewForm({
+  onSetIsOpenRatingForm,
+  selectedBookId,
+}: IReviewForm) {
   const {
     handleSubmit,
     control,

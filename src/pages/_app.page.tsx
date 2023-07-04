@@ -3,7 +3,6 @@ import type { AppProps } from 'next/app'
 // eslint-disable-next-line camelcase
 import { Nunito_Sans } from 'next/font/google'
 
-import { SelectedBookIdContextProvider } from '@/contexts/selectedBookContext'
 import { queryClient } from '@/lib/reactQuery'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
@@ -35,11 +34,9 @@ export default function MyApp({
   return (
     <SessionProvider session={session}>
       <QueryClientProvider client={queryClient}>
-        <SelectedBookIdContextProvider>
-          <div className={`${nunito.className}`}>
-            {getLayout(<Component {...pageProps} />)}
-          </div>
-        </SelectedBookIdContextProvider>
+        <div className={`${nunito.className}`}>
+          {getLayout(<Component {...pageProps} />)}
+        </div>
         <ReactQueryDevtools initialIsOpen />
       </QueryClientProvider>
     </SessionProvider>

@@ -7,12 +7,12 @@ import { Tag } from '@/components/Tags'
 import { getBookById } from '@/hooks/useGetBookById'
 import { useGetBooks } from '@/hooks/useGetBooks'
 import { useGetBooksCategories } from '@/hooks/useGetBooksCategories'
-import { useSelectedBook } from '@/hooks/useSelectedBook'
 import { Layout } from '@/layouts'
 import { queryClient } from '@/lib/reactQuery'
 import { Binoculars } from '@phosphor-icons/react'
 import { Book } from '@prisma/client'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import { ReactElement, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { NextPageWithLayout } from '../_app.page'
@@ -34,11 +34,13 @@ interface IFindByAuthorOrBookName {
 }
 
 const Explore: NextPageWithLayout = () => {
-  const { selectedBookId, onSetSelectedBookId } = useSelectedBook()
+  // const { selectedBookId, onSetSelectedBookId } = useSelectedBook()
   const { data: responseBooks, isLoading: isFetchingBooks } = useGetBooks()
   const { data: responseBookCategories } = useGetBooksCategories()
 
   const [activeCategory, setActiveCategory] = useState('Tudo')
+
+  const router = useRouter()
 
   const [filtredBooks, setFiltredBooks] = useState<IBooks[] | undefined>()
   const [prevFiltredBooks, setPrevFiltredBooks] = useState<
@@ -56,7 +58,7 @@ const Explore: NextPageWithLayout = () => {
   }
 
   async function handleSelectBook(bookId: string) {
-    onSetSelectedBookId(bookId)
+    await router.push(`/explore?book=${bookId}`, undefined, { shallow: true })
   }
 
   function onFilterByCategory(category: string) {
@@ -163,7 +165,7 @@ const Explore: NextPageWithLayout = () => {
           </>
         )}
       </PageSection>
-      <Sidebar open={!!selectedBookId} />
+      <Sidebar open={!!router.query.book} />
     </>
   )
 }

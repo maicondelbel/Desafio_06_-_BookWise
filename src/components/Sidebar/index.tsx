@@ -1,11 +1,12 @@
 import { useGetBookById } from '@/hooks/useGetBookById'
-import { useSelectedBook } from '@/hooks/useSelectedBook'
 import { BookOpen, BookmarkSimple, X } from '@phosphor-icons/react'
 import * as Dialog from '@radix-ui/react-dialog'
+import { useSession } from 'next-auth/react'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { ReviewCard } from '../Cards/ReviewCard'
-import { Link } from '../Link'
+import { Loading } from '../Loading'
 import { LoginModal } from '../LoginModal'
 import { RatingStars } from '../RatingStars'
 import { ReviewForm } from '../ReviewForm'
@@ -20,32 +21,29 @@ import {
   DialogOverlay,
   IconButton,
   Rating,
+  ReviewButton,
   ReviewSection,
   ReviewSectionHeader,
 } from './styles'
-
-import { useSession } from 'next-auth/react'
-import { Loading } from '../Loading'
 
 interface ISidebar {
   open: boolean
 }
 
 export function Sidebar({ open }: ISidebar) {
-  const { selectedBookId, onSetSelectedBookId } = useSelectedBook()
   const [isOpenSidebar, setIsOpenSidebar] = useState(open)
   const [isOpenLoginModal, setIsOpenLoginModal] = useState(false)
 
+  const router = useRouter()
+
+  const bookId = router.query.book as string
+
   const { data: responseBookById, isFetching: isLoadingBookbyId } =
-    useGetBookById(selectedBookId)
+    useGetBookById(bookId)
 
   const { data: session } = useSession()
 
   const [isOpenRatingForm, setIsOpenRatingForm] = useState(false)
-
-  function handleCloseAndClearSelectedBook() {
-    onSetSelectedBookId(undefined)
-  }
 
   function handleOpenLoginModal() {
     if (!session) {
@@ -57,6 +55,7 @@ export function Sidebar({ open }: ISidebar) {
   function onCloseSidebar(open: boolean) {
     setIsOpenSidebar(open)
     setIsOpenRatingForm(false)
+    router.replace('/explore', undefined, { shallow: true })
   }
 
   function onCloseLoginModal(open: boolean) {
@@ -84,7 +83,7 @@ export function Sidebar({ open }: ISidebar) {
       >
         <Dialog.Portal>
           <DialogOverlay>
-            <DialogContent onCloseAutoFocus={handleCloseAndClearSelectedBook}>
+            <DialogContent>
               {isLoadingBookbyId ? (
                 <Loading />
               ) : (
@@ -142,18 +141,14 @@ export function Sidebar({ open }: ISidebar) {
                       <ReviewSectionHeader>
                         <h2>Avaliações</h2>
                         {!isOpenRatingForm && !isAlreadyRated && (
-                          <Link
-                            href="/explore"
-                            size="medium"
-                            variant="purple"
-                            onClick={handleOpenLoginModal}
-                          >
+                          <ReviewButton onClick={handleOpenLoginModal}>
                             Avaliar
-                          </Link>
+                          </ReviewButton>
                         )}
                       </ReviewSectionHeader>
                       {session && !isAlreadyRated && isOpenRatingForm && (
                         <ReviewForm
+                          selectedBookId={bookId}
                           onSetIsOpenRatingForm={setIsOpenRatingForm}
                         />
                       )}
@@ -182,7 +177,6 @@ export function Sidebar({ open }: ISidebar) {
       </Dialog.Root>
       <LoginModal
         isOpen={isOpenLoginModal}
-        // onOpenChange={setIsOpenLoginModal}
         onOpenChange={(state) => onCloseLoginModal(state)}
       />
     </>

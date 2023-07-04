@@ -203,6 +203,22 @@ export const ReviewSectionHeader = styled('div', {
   },
 })
 
+export const ReviewButton = styled('button', {
+  display: 'flex',
+  gap: '$3',
+  alignItems: 'center',
+  color: '$purple100',
+  padding: '$1 $2',
+  fontWeight: '$bold',
+  lineHeight: '$base',
+  transition: 'all 0.2s',
+  cursor: 'pointer',
+
+  '&:hover': {
+    background: 'rgba(131, 129, 217, 0.06)',
+  },
+})
+
 export const Animation = styled('div', {
   overflow: 'hidden',
   transition: 'all 0.4s ease 0s',

@@ -2,7 +2,6 @@
 import { Book } from '@prisma/client'
 
 import { RatingStars } from '@/components/RatingStars'
-import { useSelectedBook } from '@/hooks/useSelectedBook'
 import { useRouter } from 'next/router'
 import { AnchorHTMLAttributes } from 'react'
 import { BookImage } from '../styles'
@@ -29,11 +28,9 @@ interface IRatedCard extends AnchorHTMLAttributes<HTMLAnchorElement> {
 
 export function RatedCard({ book, rate, created_at, ...props }: IRatedCard) {
   const router = useRouter()
-  const { onSetSelectedBookId } = useSelectedBook()
 
   async function handleSelectBook(bookId: string) {
-    onSetSelectedBookId(bookId)
-    await router.push('/explore')
+    await router.push(`/explore?book=${bookId}`)
   }
 
   return (

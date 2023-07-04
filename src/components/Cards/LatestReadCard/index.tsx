@@ -2,7 +2,6 @@
 import { Book } from '@prisma/client'
 import { RatingStars } from '../../RatingStars'
 
-import { useSelectedBook } from '@/hooks/useSelectedBook'
 import { formatDistance } from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
 import { useRouter } from 'next/router'
@@ -31,11 +30,9 @@ export function LatestReadCard({
   ...props
 }: ILatestReadCard) {
   const router = useRouter()
-  const { onSetSelectedBookId } = useSelectedBook()
 
   async function handleSelectBook(bookId: string) {
-    onSetSelectedBookId(bookId)
-    await router.push('/explore')
+    await router.push(`/explore?book=${bookId}`)
   }
 
   return (

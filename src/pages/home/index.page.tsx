@@ -21,7 +21,6 @@ import { getBookById } from '@/hooks/useGetBookById'
 import { useGetLatestBookRatingByMe } from '@/hooks/useGetLatestBookRatingByMe'
 import { useGetLatestBooksRatings } from '@/hooks/useGetLatestBooksRatings'
 import { useGetMostPopularBooks } from '@/hooks/useGetMostPopularBooks'
-import { useSelectedBook } from '@/hooks/useSelectedBook'
 import { queryClient } from '@/lib/reactQuery'
 import { useRouter } from 'next/router'
 
@@ -41,11 +40,8 @@ const Home: NextPageWithLayout = () => {
   const { data: latestBookRatingByMe, isFetching: isFetchingLatestRatingByMe } =
     useGetLatestBookRatingByMe(isLoggedIn)
 
-  const { onSetSelectedBookId } = useSelectedBook()
-
   async function handleSelectBook(bookId: string) {
-    onSetSelectedBookId(bookId)
-    await router.push('/explore')
+    await router.push(`/explore?book=${bookId}`)
   }
 
   async function handlePrefetchHabitsInDay(bookId: string) {
